@@ -396,7 +396,6 @@ If a word begins with a vowel you just add "way" to the end.
 
 Input strings are guaranteed to be English words in all lowercase.
 
-
 */
 
 function translatePigLatin(str) {
@@ -646,3 +645,278 @@ function steamrollArray(arr) {
 }
 
 steamrollArray([5, [[4, 5, 6]], 5]);
+
+//-------------------------------------------------
+
+/*
+
+Binary Agents
+Return an English translated sentence of the passed binary string.
+
+*/
+
+function binaryAgent(str) {
+  let arr = str.split(" ");
+  return arr.map(x => {
+     return String.fromCharCode(parseInt(x, 2))
+  }).join('')
+}
+
+binaryAgent("01000001 01110010 01100101 01101110 00100111 01110100 00100000 01100010 01101111 01101110 01100110 01101001 01110010 01100101 01110011 00100000 01100110 01110101 01101110 00100001 00111111");
+
+//-------------------------------------------------
+
+/*
+
+Everything Be True
+Check if the predicate (second argument) is truthy on all elements of a collection (first argument).
+
+In other words, you are given an array collection of objects. The predicate pre will be an object property and you need to return true 
+if its value is truthy. Otherwise, return false.
+
+*/
+
+function truthCheck(collection, pre) {
+  for (let prop in collection) {
+      console.log(prop)
+      if(!collection[prop][pre]) {
+          console.log(false)
+          return false;
+       }
+   }
+   console.log(true)
+   return true
+ }
+
+truthCheck([{"user": "Tinky-Winky", "sex": "male", "age": 0}, {"user": "Dipsy", "sex": "male", "age": 3}, {"user": "Laa-Laa", "sex": "female", "age": 5}, {"user": "Po", "sex": "female", "age": 4}], "age");
+
+//-------------------------------------------------
+
+/*
+
+Arguments Optional
+Create a function that sums two arguments together. If only one argument is provided, then return a function that expects one argument and returns the sum.
+
+
+*/
+
+function addTogether() {
+  let arr = [...arguments]
+for (let i = 0; i < arr.length; i++) {
+  if ((typeof arr[i]) !== "number") {
+      return undefined;
+  } else if (arr.length === 1) {
+      return function add(y){
+          if (typeof y !== "number") {
+              return undefined;
+          }
+          return y + arr[i];
+      };
+  }
+}
+return arr.reduce((x, y) => x + y)
+}
+
+//-------------------------------------------------
+
+/*
+
+Make a Person
+Fill in the object constructor with the following methods below:
+
+getFirstName() getLastName() getFullName() setFirstName(first) setLastName(last) setFullName(firstAndLast)
+Run the tests to see the expected output for each method.
+
+The methods that take an argument must accept only one argument and it has to be a string.
+
+These methods must be the only available means of interacting with the object.
+
+*/
+
+let Person = function(firstAndLast) {
+  let arr = firstAndLast.split(' ')  
+  this.getFullName = function() {
+    return arr.join(' ');
+  };
+  this.getFirstName = function() {
+    return arr[0];
+  };
+  this.getLastName = function() {
+    return arr[1];
+  };
+  this.setFullName = function(firstAndLast) {
+      let newFull = [];
+      newFull = firstAndLast.split(' ');
+      for (let i = 0; i < arr.length; i++) {
+
+        // This verifies if both the firstname and lastname from the new input are different
+
+          if (arr[0] !== newFull[0] && arr[1] === newFull[1]) {
+
+            // if only first name is different, it will only return the setFirstName function with the new firstname
+
+              return this.setFirstName(newFull[0])
+            
+          } else if (arr[1] !== newFull[1] && arr[0] === newFull[0]) {
+            
+            //if only the lastname is different, it will return the setLastname function with the new lastname
+
+            return this.setLastName(newFull[1])
+          } else {
+              arr = newFull
+              return arr.join(" ")
+          }
+      }
+  };
+  this.setFirstName = function(first) {
+    arr[0] = first;
+    return this.getFullName(arr);
+  };
+  this.setLastName = function(last) {
+      arr[1] = last; 
+    return this.getFullName(arr);
+  }
+}
+
+var bob = new Person('Jose Ross');
+console.log(bob.setFullName('Billy Tobar'))
+console.log(bob.getFirstName())
+console.log(bob.getLastName())
+console.log(bob.getFullName())
+
+//-------------------------------------------------
+
+/*
+
+Map the Debris
+Return a new array that transforms the elements' average altitude into their orbital periods (in seconds).
+The values should be rounded to the nearest whole number. The body being orbited is Earth.
+
+*/
+
+function orbitalPeriod(arr) {
+  let GM = 398600.4418;
+  let earthRadius = 6367.4447;
+  let result = [];
+  for (let el in arr) { 
+      result.push({
+          name: arr[el].name,
+          orbitalPeriod:  Math.round( 2 * Math.PI *  Math.sqrt( Math.pow( ( arr[el].avgAlt + earthRadius ) , 3 ) / GM ) )
+      })
+      console.log(result)
+  }
+  return result;
+}
+
+orbitalPeriod([{name : "sputnik", avgAlt : 35873.5553}]);
+
+//-------------------------------------------------
+
+// FINAL JS PROJECTS
+
+//-------------------------------------------------
+
+
+//-------------------------------------------------
+
+/*
+
+Palindrome Checker
+
+Return true if the given string is a palindrome. Otherwise, return false.
+
+A palindrome is a word or sentence that's spelled the same way both forward and backward, ignoring punctuation, case, and spacing.
+
+*/
+
+function palindrome(str) {
+  let regex = /[^a-z|0-9]|\s/g;
+  let arr = [...str.toLowerCase().replace(regex, '')];
+  return arr.join('') === arr.reverse().join('') ? true : false;
+}
+
+
+
+palindrome("A man, a plan, a canal. Panama");
+
+
+//-------------------------------------------------
+
+/*
+
+Roman Numeral Converter
+Convert the given number into a roman numeral.
+
+All roman numerals answers should be provided in upper-case.
+
+*/
+
+function convertToRoman(num) {
+  let decNum = num
+  const romArr = ['M', 'CM', 'DC', 'D', 'CD', 'C', 'XC', 'LX', 'L', 'XL', 'X', 'IX', 'VI', 'V', 'IV', 'I'];
+  const numArr = [1000, 900, 600, 500, 400, 100, 90, 60, 50, 40, 10, 9, 6, 5, 4, 1];
+  let result = '';
+
+  for (let i = 0; i < numArr.length; i++){
+      if ((decNum - numArr[i]) >= 0) {
+          result += romArr[i];
+          decNum -= numArr[i];
+          i = -1;
+      }
+  }
+  return result;
+ }
+
+ //-------------------------------------------------
+
+/*
+
+Caesars Cipher
+
+One of the simplest and most widely known ciphers is a Caesar cipher, also known as a shift cipher. 
+In a shift cipher the meanings of the letters are shifted by some set amount.
+
+A common modern use is the ROT13 cipher, where the values of the letters are shifted by 13 places. 
+Thus 'A' ↔ 'N', 'B' ↔ 'O' and so on.
+
+Write a function which takes a ROT13 encoded string as input and returns a decoded string.
+
+*/
+
+function rot13(str) { // LBH QVQ VG!
+  let regex = /[A-Z]/g;
+  let rotArr = [...str];
+return rotArr.map(x => {
+    let val = 0;
+    if (x.charCodeAt() < 78 && x.match(regex)) {
+        val = x.charCodeAt() + 13;
+      return String.fromCharCode(val)
+    } else if (x.charCodeAt() >= 78 && x.match(regex)) {
+      val = x.charCodeAt() - 13;
+      return String.fromCharCode(val);
+    }
+    return x;
+}).join('')
+};
+
+rot13("SERR YBIR?");
+
+ //-------------------------------------------------
+
+/*
+
+Telephone Number Validator
+Return true if the passed string looks like a valid US phone number.
+
+The user may fill out the form field any way they choose as long as it has the format of a valid US number. 
+The following are examples of valid formats for US numbers (refer to the tests below for other variants):
+
+555-555-5555
+(555)555-5555
+(555) 555-5555
+555 555 5555
+5555555555
+1 555 555 5555
+
+*/
+
