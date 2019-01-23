@@ -919,3 +919,81 @@ The following are examples of valid formats for US numbers (refer to the tests b
 
 */
 
+function telephoneCheck(str) {
+  let regExPhNum = /^1?[" "]?\(?\d{3}\)?[-|" "]?\d{3}[-|" "]?\d{4}$/g;
+  if (str.match(/\(/) && str.match(/\)/) || !str.match(/\(/) && !str.match(/\)/) ) {
+      return regExPhNum.test(str)
+  } 
+  return false; 
+}
+
+telephoneCheck("555-555-5555");
+
+ //-------------------------------------------------
+
+/*
+
+Cash Register
+Design a cash register drawer function checkCashRegister() that accepts purchase price as 
+the first argument (price), payment as the second argument (cash), and cash-in-drawer (cid) 
+as the third argument.
+
+cid is a 2D array listing available currency.
+
+The checkCashRegister() function should always return an object with a status key and a change key.
+
+Return {status: "INSUFFICIENT_FUNDS", change: []} if cash-in-drawer is less than the change due, or 
+if you cannot return the exact change.
+
+Return {status: "CLOSED", change: [...]} with cash-in-drawer as the value for the key change 
+if it is equal to the change due.
+
+Otherwise, return {status: "OPEN", change: [...]}, with the change due in coins and bills, sorted in 
+highest to lowest order, as the value of the change key.
+
+*/
+
+function checkCashRegister(price, cash, cid) {
+  let ttlStart = 0, ttlEnd = 0, change = [], apCid = cid.reverse(), rem = cash-price;
+  let cashDen = {
+      "ONE HUNDRED": 100,
+      "TWENTY": 20,
+      "TEN": 10,
+      "FIVE": 5,
+      "ONE": 1,
+      "QUARTER": 0.25,
+      "DIME": 0.1,
+      "NICKEL": 0.05,
+      "PENNY": 0.01
+  }
+
+  apCid.map(x => {
+      ttlStart += x[1]
+      let unitsCid = (x[1] / cashDen[x[0]]).toFixed()
+      let unitsNeed = Math.floor((rem.toFixed(2) / cashDen[x[0]]).toFixed(2))
+     
+      if ( unitsNeed >= 1 && unitsNeed >= unitsCid ) {
+          rem = rem.toFixed(2) - unitsCid*cashDen[x[0]];
+          ttlEnd += (unitsNeed-unitsCid)*cashDen[x[0]]
+          change.push([x[0], unitsCid*cashDen[x[0]]])
+
+      } else if ( unitsNeed >= 1 && unitsCid > unitsNeed ) {
+          rem = rem.toFixed(2) - unitsNeed*cashDen[x[0]];
+          ttlEnd += (unitsCid-unitsNeed)*cashDen[x[0]]
+          change.push([x[0], unitsNeed*cashDen[x[0]].toFixed(2)])
+      }
+      ttlEnd += x[1]
+      return false  
+  });
+
+  console.log(ttlStart)
+  if (ttlStart < price-cash || rem > 0) {
+      return {status: "INSUFFICIENT_FUNDS", change: []}
+  }
+  if (ttlStart - (cash-price) === 0) {
+      return {status: "CLOSED", change: apCid.reverse()}
+  } 
+  return {status: "OPEN", change: change}
+  }
+
+checkCashRegister(19.5, 20, [["PENNY", 1.01], ["NICKEL", 2.05], ["DIME", 3.1], ["QUARTER", 4.25], ["ONE", 90], ["FIVE", 55], ["TEN", 20], ["TWENTY", 60], ["ONE HUNDRED", 100]]);
